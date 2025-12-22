@@ -8,6 +8,7 @@ export class OrdersController {
   @Post()
   create(@Body() body: any) {
     console.log('orderController create() is called');
+    console.log(body);
     return this.ordersService.createOrder(body);
   }
 
