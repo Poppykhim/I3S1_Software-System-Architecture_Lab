@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Receipt } from 'src/database/entities/receipts.entity';
@@ -9,7 +9,7 @@ import { NotificationsService } from 'src/notifications/notifications.service';
 @Injectable()
 export class ReceiptsService {
   constructor(
-    @InjectRepository(Receipt)
+    @Inject('RECEIPT_REPO')
     private readonly receiptRepo: Repository<Receipt>,
     private readonly notifications: NotificationsService,
   ) {}
@@ -25,14 +25,15 @@ export class ReceiptsService {
   }
 
   async create(dto: CreateReceiptDto) {
-    const receipt = this.receiptRepo.create({
-      issuedAt: new Date(dto.issuedAt),
-      name: dto.name,
-      price: dto.price,
-    });
-    const saved = await this.receiptRepo.save(receipt);
+    const saved = await this.receiptRepo.save(
+      this.receiptRepo.create({
+        issuedAt: new Date(dto.issuedAt),
+        name: dto.name,
+        price: dto.price,
+      }),
+    );
 
-    this.notifications.notify('receipt_created', {
+    this.notifications.notify('receipts', 'receipt_created', {
       receiptId: saved.receiptId,
       price: saved.price,
     });
@@ -48,7 +49,14 @@ export class ReceiptsService {
     if (dto.name !== undefined) receipt.name = dto.name;
     if (dto.price !== undefined) receipt.price = dto.price;
 
-    return this.receiptRepo.save(receipt);
+    const saved = await this.receiptRepo.save(receipt);
+
+    this.notifications.notify('receipts', 'receipt_updated', {
+      receiptId: saved.receiptId,
+      price: saved.price,
+    });
+
+    return saved;
   }
 
   async remove(receiptId: string) {
