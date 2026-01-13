@@ -14,6 +14,8 @@ import { Category } from './module/category/entities/category.entity';
 import { ProductModule } from './module/product/product.module';
 import { Product } from './module/product/entities/product.entity';
 import { Receipt } from './database/entities/receipts.entity';
+import { DobModule } from './DOB/DOBs.module';
+import { CustomersModule } from './customers/customer.module';
 
 @Module({
   imports: [
@@ -48,6 +50,8 @@ import { Receipt } from './database/entities/receipts.entity';
     }),
     CategoryModule,
     ProductModule,
+    DobModule,
+    CustomersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
