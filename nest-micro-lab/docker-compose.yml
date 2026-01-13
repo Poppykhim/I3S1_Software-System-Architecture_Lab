@@ -32,6 +32,21 @@ services:
     depends_on:
       - rabbitmq
 
+  auth-service:
+    build: ./auth-service
+    ports:
+      - "3001:3000" # Maps localhost:3001 to container:3000
+    environment:
+      RABBITMQ_URL: amqp://${RABBIT_USER}:${RABBIT_PASS}@rabbitmq:5672
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASS}
+      DB_NAME: ${DB_NAME}
+    depends_on:
+      - postgres
+      - rabbitmq
+
   order-worker:
     build: ./order-worker
     container_name: order-worker
