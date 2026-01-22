@@ -29,16 +29,16 @@ export class ProductController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.service.findOne(id);
+    return this.service.findOne(Number(id));
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() dto: UpdateProductDto) {
-    return this.service.update(id, dto);
+    return this.service.update(Number(id), dto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.service.remove(id);
+    return this.service.remove(Number(id));
   }
 }

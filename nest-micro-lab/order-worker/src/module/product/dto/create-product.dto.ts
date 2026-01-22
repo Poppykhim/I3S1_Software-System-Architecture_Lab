@@ -10,7 +10,7 @@ export class CreateProductDto {
   price: number;
 
   @IsString()
-  sku: string;
+  sku?: string;
 
   @IsUUID()
   categoryId: string;
